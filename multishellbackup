@@ -1,0 +1,15 @@
+#!/bin/bash
+
+echo "--------------------------- Multi cPanel Back ---------------------"
+echo " "
+
+echo "Looping user list and creating backup"
+
+cd /var/cpanel/users
+ls -d * > users.txt
+cat /var/cpanel/users/users.txt | while read a; do /scripts/pkgacct $a; done
+
+echo " Start Sending file to remote server"
+
+rsync --progress --partial -avz --rsh='ssh -p 2210' /home/cpmove-$a.tar.gz root@remoteserverIP:/home/
+echo "Done"
